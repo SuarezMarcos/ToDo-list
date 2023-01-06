@@ -42,7 +42,7 @@ window.addEventListener('load', function () {
     /* -------------------------------------------------------------------------- */
     /*                    FUNCIÓN 2: Realizar el signup [POST]                    */
     /* -------------------------------------------------------------------------- */
-    function userRegister(user) {
+   /*  function userRegister(user) {
         const configuration = {
             method: 'POST',
             headers: {
@@ -59,6 +59,38 @@ window.addEventListener('load', function () {
                 }
             });
 
+    }; */
+
+    /* -------------------------------------------------------------------------- */
+    function realizarRegister(settings) {
+        console.log("Lanzando la consulta a la API");
+        fetch(`${url}/users`, settings)
+            .then(response => {
+                console.log(response);
+
+                if (response.ok != true) {
+                    alert("Alguno de los datos es incorrecto.")
+                }
+
+                return response.json();
+
+            })
+            .then(data => {
+                console.log("Promesa cumplida:");
+                console.log(data);
+
+                if (data.jwt) {
+                    //guardo en LocalStorage el objeto con el token
+                    localStorage.setItem('jwt', JSON.stringify(data.jwt));
+
+                    //redireccionamos a la página
+                    location.replace('./mis-tareas.html');
+                }
+
+            }).catch(err => {
+                console.log("Promesa rechazada:");
+                console.log(err);
+            })
     };
 
 });
