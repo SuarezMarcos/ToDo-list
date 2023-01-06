@@ -1,6 +1,6 @@
 window.addEventListener('load', function () {
     /* ---------------------- obtenemos variables globales ---------------------- */
-    const URI_BASE = 'http://todo-api.ctd.academy:3000/v1';
+    const URI_BASE = 'http://todo-api.ctd.academy:3000//v1';
     const form = document.querySelector('form');
     const email = document.querySelector('#inputEmail');
     const password = document.querySelector('#inputPassword');
