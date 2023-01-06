@@ -1,6 +1,6 @@
 window.addEventListener('load', function() {
     /* ---------------------- obtenemos variables globales ---------------------- */
-    const URI_BASE = 'http://todo-api.ctd.academy:3000/v1';
+    const URI_BASE = 'http://todo-api.ctd.academy:3000//v1';
 
     /* -------------------------------------------------------------------------- */
     /*            FUNCIÓN 1: Escuchamos el submit y preparamos el envío           */
