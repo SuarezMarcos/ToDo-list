@@ -1,71 +1,60 @@
-
 window.addEventListener('load', function() {
     /* ---------------------- obtenemos variables globales ---------------------- */
-    const form = document.forms[0];
-    const nombre = document.querySelector('#inputNombre');
-    const apellido = document.querySelector('#inputApellido');
-    const email = document.querySelector('#inputEmail');
-    const password = document.querySelector('#inputPassword');
-    const url = 'http://todo-api.ctd.academy:3000/v1';
+    const URI_BASE = 'http://todo-api.ctd.academy:3000/v1';
 
     /* -------------------------------------------------------------------------- */
     /*            FUNCIÓN 1: Escuchamos el submit y preparamos el envío           */
     /* -------------------------------------------------------------------------- */
+    const form = document.querySelector('form');
     form.addEventListener('submit', function(event) {
         event.preventDefault();
-        //creamos el cuerpo de la request
-        const payload = {
-            firstName: nombre.value,
-            lastName: apellido.value,
-            email: email.value,
-            password: password.value
-        };
-        //configuramos la request del Fetch
-        const settings = {
-            method: 'POST',
-            body: JSON.stringify(payload),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        };
-        //lanzamos la consulta de login a la API
-        realizarRegister(settings);
 
-        //limpio los campos del formulario
-        form.reset();
+        let usuario = {
+            firstName: document.querySelector('#inputNombre').value,
+            lastName: document.querySelector('#inputApellido').value,
+            email: normalizarEmail(document.querySelector('#inputEmail').value),
+            password: document.querySelector('#inputPassword').value
+        }
+
+        let passwordRepetida = document.querySelector('#inputPasswordRepetida').value;
+        // Validar todos los datos antes de llamar a la API
+
+
+        if(validarTexto(usuario.firstName) && validarTexto(usuario.lastName) 
+        && validarEmail(usuario.email) && validarContrasenia(usuario.password) 
+        && compararContrasenias(usuario.password, passwordRepetida)) {
+
+            realizarRegister(usuario);
+        } else {
+            console.log('Debe corregir sus datos');
+        }
+
+        // redirigir a login en caso de éxito
     });
 
     /* -------------------------------------------------------------------------- */
     /*                    FUNCIÓN 2: Realizar el signup [POST]                    */
     /* -------------------------------------------------------------------------- */
-    function realizarRegister(settings) {
-        console.log("Lanzando la consulta a la API");
-        fetch(`${url}/users`, settings)
-            .then(response => {
-                console.log(response);
+    function realizarRegister(usuario) {
+        const configuracion = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(usuario)
+        };
 
-                if (response.ok != true) {
-                    alert("Alguno de los datos es incorrecto.")
+        fetch(`${URI_BASE}/users`, configuracion)
+            .then(respuesta => respuesta.status)
+            .then(status => {
+
+                if(status == 200 || status == 201) {
+
+                    location.replace('index.html');
                 }
+            });
 
-                return response.json();
-
-            })
-            .then(data => {
-                console.log("Promesa cumplida:");
-                console.log(data);
-
-                if (data.jwt) {
-                    //guardo en LocalStorage el objeto con el token
-                    localStorage.setItem('jwt', JSON.stringify(data.jwt));
-
-                    //redireccionamos a la página
-                    location.replace('./mis-tareas.html');
-                }
-
-            }).catch(err => {
-                console.log("Promesa rechazada:");
-                console.log(err);
-            })
     };
+
+
 });
