@@ -1,66 +1,42 @@
 
-window.addEventListener('load', function () {
+window.addEventListener('load', function() {
     /* ---------------------- obtenemos variables globales ---------------------- */
-    const URI_BASE = 'http://todo-api.ctd.academy:3000/v1';
-
+    const form = document.forms[0];
+    const nombre = document.querySelector('#inputNombre');
+    const apellido = document.querySelector('#inputApellido');
+    const email = document.querySelector('#inputEmail');
+    const password = document.querySelector('#inputPassword');
+    const url = 'http://todo-api.ctd.academy:3000/v1';
 
     /* -------------------------------------------------------------------------- */
     /*            FUNCIÓN 1: Escuchamos el submit y preparamos el envío           */
     /* -------------------------------------------------------------------------- */
-    const form = document.querySelector('form');
-    form.addEventListener('submit', function (event) {
-
+    form.addEventListener('submit', function(event) {
         event.preventDefault();
+        //creamos el cuerpo de la request
+        const payload = {
+            firstName: nombre.value,
+            lastName: apellido.value,
+            email: email.value,
+            password: password.value
+        };
+        //configuramos la request del Fetch
+        const settings = {
+            method: 'POST',
+            body: JSON.stringify(payload),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+        //lanzamos la consulta de login a la API
+        realizarRegister(settings);
 
-        const user = {
-            firstName: document.querySelector('#inputNombre').value,
-            lastName: document.querySelector('#inputApellido').value,
-            email: document.querySelector('#inputEmail').value,
-            password: document.querySelector('#inputPassword').value,
-        }
-
-        // Validation
-        let passwordRepetida = document.querySelector('#inputPasswordRepetida').value;
-
-        try{
-            //mailValidation(user.email)
-            if(validarTexto(user.firstName) && validarTexto(user.lastName) 
-                && validarEmail(user.email) && validarContrasenia(user.password) 
-                && compararContrasenias(user.password, passwordRepetida)){
-            userRegister(user);
-        }
-
-        }catch(error){
-            console.log(error)
-        }
-
-        // redirigir a login en caso de éxito
-       // window.location.assign('../index.html');
-
+        //limpio los campos del formulario
+        form.reset();
     });
 
     /* -------------------------------------------------------------------------- */
     /*                    FUNCIÓN 2: Realizar el signup [POST]                    */
-    /* -------------------------------------------------------------------------- */
-   /*  function userRegister(user) {
-        const configuration = {
-            method: 'POST',
-            headers: {
-                'Content-Type' : 'application/json' 
-            },
-            body: JSON.stringify(user)
-        }
-        fetch(`${URI_BASE}/users`, configuration)
-            .then(res => res.status)
-            .then(status => {
-
-                if(status == 200 || status == 201) {
-                    location.replace('index.html');
-                }
-            });
-
-    }; */
-
     /* -------------------------------------------------------------------------- */
     function realizarRegister(settings) {
         console.log("Lanzando la consulta a la API");
@@ -92,5 +68,4 @@ window.addEventListener('load', function () {
                 console.log(err);
             })
     };
-
 });
