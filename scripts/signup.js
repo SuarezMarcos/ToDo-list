@@ -1,60 +1,65 @@
-window.addEventListener('load', function() {
+
+window.addEventListener('load', function () {
     /* ---------------------- obtenemos variables globales ---------------------- */
     const URI_BASE = 'http://todo-api.ctd.academy:3000/v1';
+
 
     /* -------------------------------------------------------------------------- */
     /*            FUNCIÓN 1: Escuchamos el submit y preparamos el envío           */
     /* -------------------------------------------------------------------------- */
     const form = document.querySelector('form');
-    form.addEventListener('submit', function(event) {
+    form.addEventListener('submit', function (event) {
+
         event.preventDefault();
 
-        let usuario = {
+        const user = {
             firstName: document.querySelector('#inputNombre').value,
             lastName: document.querySelector('#inputApellido').value,
-            email: normalizarEmail(document.querySelector('#inputEmail').value),
-            password: document.querySelector('#inputPassword').value
+            email: document.querySelector('#inputEmail').value,
+            password: document.querySelector('#inputPassword').value,
         }
 
+        // Validation
         let passwordRepetida = document.querySelector('#inputPasswordRepetida').value;
-        // Validar todos los datos antes de llamar a la API
 
+        try{
+            //mailValidation(user.email)
+            if(validarTexto(user.firstName) && validarTexto(user.lastName) 
+                && validarEmail(user.email) && validarContrasenia(user.password) 
+                && compararContrasenias(user.password, passwordRepetida)){
+            userRegister(user);
+        }
 
-        if(validarTexto(usuario.firstName) && validarTexto(usuario.lastName) 
-        && validarEmail(usuario.email) && validarContrasenia(usuario.password) 
-        && compararContrasenias(usuario.password, passwordRepetida)) {
-
-            realizarRegister(usuario);
-        } else {
-            console.log('Debe corregir sus datos');
+        }catch(error){
+            console.log(error)
         }
 
         // redirigir a login en caso de éxito
+       // window.location.assign('../index.html');
+
     });
 
     /* -------------------------------------------------------------------------- */
     /*                    FUNCIÓN 2: Realizar el signup [POST]                    */
     /* -------------------------------------------------------------------------- */
-    function realizarRegister(usuario) {
-        const configuracion = {
+    function userRegister(user) {
+        const configuration = {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type' : 'application/json' 
             },
-            body: JSON.stringify(usuario)
-        };
-
-        fetch(`${URI_BASE}/users`, configuracion)
-            .then(respuesta => respuesta.status)
+            body: JSON.stringify(user)
+        }
+        fetch(`${URI_BASE}/users`, configuration)
+            .then(res => res.status)
             .then(status => {
 
                 if(status == 200 || status == 201) {
-
                     location.replace('index.html');
                 }
             });
 
-    };
-
+    }; 
+    
 
 });
